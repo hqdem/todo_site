@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Todo List{% endblock %}
+
+{% block content %}
+    <div class="main-form d-flex justify-content-center">
+        <form action="{% url 'create_task' %}" method="post">
+            {% csrf_token %}
+            <p class="title">{{ form.title }}</p>
+            <button class="btn btn-outline-info" type="submit">Создать задачу</button>
+        </form>
+    </div>
+
+    <div class="tasks">
+        {% if tasks %}
+            {% if request.session.sorting == 'created_at' %}
+            <a href="{% url 'change_sorting' %}">Сортировка (Сначала старые)</a>
+            {% else %}
+            <a href="{% url 'change_sorting' %}">Сортировка (Сначала новые)</a>
+            {% endif %}
+            {% for task in tasks %}
+                <div class="task">
+                    {% if task.is_completed %}
+                    <p><s>{{ task.title }}</s></p>
+                    {% else %}
+                    <p>{{ task.title }}</p>
+                    {% endif %}
+
+                    <a class="btn btn-outline-warning" href="{% url 'update_task' task.pk %}">Изменить</a>
+                    <a class="btn btn-outline-danger" href="{% url 'delete_task' task.pk %}">Удалить</a>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
